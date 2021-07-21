@@ -1,0 +1,42 @@
+<nodeDefs>
+    <!-- NODE DEF from 5.0 document http://wiki.universal-devices.com/index.php?title=V50_MAIN -->
+    <!-- controller, this must mach the id in your Controller class-->
+    <nodeDef id="controller" nls="ctl">
+        <editors/>
+        <sts>
+            <st id="ST" editor="bool"/>
+            <st id="GV1" editor="I_DEBUG"/>
+        </sts>
+        <cmds>
+            <accepts>
+                <cmd id="SET_DM">
+                    <p id="" editor="I_DEBUG" init="GV1"/>
+                </cmd>
+                <cmd id="QUERY"/>
+                <cmd id="DISCOVER"/>
+            </accepts>
+        </cmds>
+    </nodeDef>
+    <nodeDef id="daikinnode" nls="daikinnls">
+        <editors/>
+        <sts>
+            <st id="ST" editor="I_CLISPC_F"/>
+            <st id="CLISPC" editor="I_CLISPC_F"/>
+            <st id="CLIMD" editor="I_TSTAT_MODE"/>
+            <st id="GV3" editor="I_DAIKIN_FAN_MODE"/>
+        </sts>
+        <cmds>
+            <accepts>
+                <cmd id="SET_TEMP">
+                    <p id="" editor="I_CLISPC_F" init="CLISPC"/>
+                </cmd>
+                <cmd id="SET_MODE">
+                    <p id="" editor="I_DAIKIN_MODE" init="CLIMD"/>
+                </cmd>
+                <cmd id="SET_FAN_MODE">
+                    <p id="" editor="I_DAIKIN_FAN_MODE" init="GV3"/>
+                </cmd>
+            </accepts>
+        </cmds>
+    </nodeDef>
+</nodeDefs>

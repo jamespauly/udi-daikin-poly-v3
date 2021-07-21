@@ -1,0 +1,43 @@
+# controller
+ND-controller-NAME = NodeServer Online
+ND-controller-ICON = GenericCtl
+CMD-ctl-QUERY-NAME = Query
+CMD-ctl-DISCOVER-NAME = Discover
+CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
+CMD-ctl-SET_DM-NAME = Set Logger Level
+ST-ctl-ST-NAME = Node Server Running
+ST-ctl-GV1-NAME = Logger Level
+
+# Debug/Logger Modes
+CDM-9 = Debug + Modules
+CDM-10 = Debug
+CDM-20 = Info
+CDM-30 = Warning
+CDM-40 = Error
+CDM-50 = Critical
+
+# Daikin Modes
+#IDM-2 = Dry
+#IDM-3 = Cool
+#IDM-4 = Heat
+#IDM-6 = Fan
+#IDM-7 = Auto
+#IDM-10 = Off
+
+# Daikin Fan Modes
+IFM-10 = Auto
+IFM-3 = 1
+IFM-4 = 2
+IFM-5 = 3
+IFM-6 = 4
+IFM-7 = 5
+
+# daikinnodetype
+ND-daikinnode-NAME = Diakin Node
+ST-daikinnls-ST-NAME = Inside Temperature
+ST-daikinnls-CLISPC-NAME = Target Temperature
+ST-daikinnls-CLIMD-NAME = Mode
+ST-GV3-NAME = Fan State
+CMD-daikinnls-SET_TEMP-NAME = Set Temperature
+CMD-daikinnls-SET_MODE-NAME = Set Mode
+CMD-daikinnls-SET_FAN_MODE-NAME = Set Fan Speed
