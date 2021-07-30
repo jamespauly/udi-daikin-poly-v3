@@ -10,16 +10,18 @@ LOGGER = udi_interface.LOGGER
 class DaikinNode(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name, ip):
         self.ip = ip
+        self.address = address
         super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.poly.subscribe(self.poly.START, self.start, address)
+        self.poly.subscribe(self.poly.POLL, self.poll)
 
     async def process_fan_mode(self, mode):
         try:
-            LOGGER.debug('Process_fan_mode incoming value: ' + str(mode))
+            LOGGER.info('Process_fan_mode incoming value: ' + str(mode))
             daikin_control = DaikinInterface(self.ip, False)
             await daikin_control.get_control()
             c_mode = mode
-            LOGGER.debug('c_mode: ' + str(mode))
+            LOGGER.info('c_mode: ' + str(mode))
             if c_mode == '10':
                 c_mode = 'A'
             settings = {'f_rate': c_mode}
@@ -30,7 +32,7 @@ class DaikinNode(udi_interface.Node):
 
     async def process_mode(self, mode):
         try:
-            LOGGER.debug('Process_mode incoming value: ' + str(mode))
+            LOGGER.info('Process_mode incoming value: ' + str(mode))
             daikin_control = DaikinInterface(self.ip, False)
             settings = {}
             if int(mode) == 0:
@@ -48,10 +50,10 @@ class DaikinNode(udi_interface.Node):
             daikin_control = DaikinInterface(self.ip, False)
             await daikin_control.get_control()
             control = daikin_control.values
-            LOGGER.debug('Process_temp temp : ' + str(temp))
-            LOGGER.debug('Process_temp stemp: ' + str(control['stemp']))
+            LOGGER.info('Process_temp temp : ' + str(temp))
+            LOGGER.info('Process_temp stemp: ' + str(control['stemp']))
             if control['stemp'] != 'M':
-                LOGGER.debug('process_temp stemp is numeric: ' + str(control['stemp']))
+                LOGGER.info('process_temp stemp is numeric: ' + str(control['stemp']))
                 settings = {'stemp': utilities.fahrenheit_to_celsius(temp)}
                 await daikin_control.set(settings)
                 self.setDriver("CLISPC", temp)
@@ -66,24 +68,24 @@ class DaikinNode(udi_interface.Node):
             daikin_control = DaikinInterface(self.ip, False)
             await daikin_control.get_control()
             control = daikin_control.values
-            LOGGER.debug('Inside Temp: ' + str(utilities.celsius_to_fahrenheit(sensor['htemp'])))
+            LOGGER.info('Inside Temp: ' + str(utilities.celsius_to_fahrenheit(sensor['htemp'])))
             self.setDriver('ST', utilities.celsius_to_fahrenheit(sensor['htemp']))
-            LOGGER.debug('stemp: ' + str(control['stemp']))
+            LOGGER.info('stemp: ' + str(control['stemp']))
             if control['stemp'] != 'M':
                 self.setDriver('CLISPC', utilities.celsius_to_fahrenheit(control['stemp']))
-                LOGGER.debug('Set Temp: ' + str(control['stemp']))
-            LOGGER.debug('Process Mode: ' + str(control['mode']))
-            LOGGER.debug('ISY process mode: ' + str(utilities.to_isy_mode_value(control['mode'])))
+                LOGGER.info('Set Temp: ' + str(control['stemp']))
+            LOGGER.info('Process Mode: ' + str(control['mode']))
+            LOGGER.info('ISY process mode: ' + str(utilities.to_isy_mode_value(control['mode'])))
             if int(control['pow']) == 1:
                 self.setDriver('CLIMD', utilities.to_isy_mode_value(int(control['mode'])))
             else:
                 self.setDriver('CLIMD', 0)
-            LOGGER.debug('Fan Speed: ' + str(control['f_rate']))
-            LOGGER.debug('ISY Fan Speed: ' + str(utilities.to_isy_fan_mode_value(control['f_rate'])))
+            LOGGER.info('Fan Speed: ' + str(control['f_rate']))
+            LOGGER.info('ISY Fan Speed: ' + str(utilities.to_isy_fan_mode_value(control['f_rate'])))
             c_mode = control['f_rate']
             if c_mode == 'A':
                 c_mode = 10
-            LOGGER.debug('c_mode: ' + str(c_mode))
+            LOGGER.info('c_mode: ' + str(c_mode))
             self.setDriver('GV3', c_mode)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
@@ -98,23 +100,26 @@ class DaikinNode(udi_interface.Node):
         asyncio.run(self.process_fan_mode(cmd['value']))
 
     def query(self):
-        LOGGER.debug("Query sensor {}".format(self.address))
+        LOGGER.info("Query sensor {}".format(self.address))
         asyncio.run(self.process())
         self.reportDrivers()
 
     def start(self):
         self.query()
 
-# FIXME: Seem that shortpoll is not called in the Node object.  Need to investigate.
-    def shortPoll(self):
-        LOGGER.debug('shortPoll')
-        self.query()
+    def poll(self, pollType):
+        if 'shortPoll' in pollType:
+            LOGGER.info("shortPoll (%s)", self.address)
+            self.query()
+        else:
+            LOGGER.info("longPoll (%s)", self.address)
+            pass
 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': '17'},  # Current Temp
                {'driver': 'CLISPC', 'value': 0, 'uom': '17'},  # Set Cool Point
                {'driver': 'CLIMD', 'value': 0, 'uom': '67'},  # Current Mode
                {'driver': 'GV3', 'value': 0, 'uom': '25'}  # Set Fan Mode
-        ]
+               ]
 
     commands = {
         'SET_TEMP': cmd_set_temp,

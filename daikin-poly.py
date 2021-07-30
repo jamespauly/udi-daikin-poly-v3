@@ -7,12 +7,16 @@ import udi_interface
 import sys
 
 LOGGER = udi_interface.LOGGER
+LOG_HANDLER = udi_interface.LOG_HANDLER;
 
 from nodes import DaikinController
 from nodes import DaikinNode
 
+import logging
+
 if __name__ == "__main__":
     try:
+        LOG_HANDLER.set_basic_config(True, logging.DEBUG)
         polyglot = udi_interface.Interface([DaikinController, DaikinNode])
         polyglot.start()
         control = DaikinController(polyglot, 'controller', 'controller', 'Daikin Controller')

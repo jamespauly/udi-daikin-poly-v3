@@ -1,3 +1,2 @@
-polyinterface >= 2.1.0
-urllib3
+udi-interface
 pydaikin

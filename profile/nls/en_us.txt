@@ -1,6 +1,6 @@
 # controller
 ND-controller-NAME = NodeServer Online
-ND-controller-ICON = GenericCtl
+ND-controller-ICON = TempSensor
 CMD-ctl-QUERY-NAME = Query
 CMD-ctl-DISCOVER-NAME = Discover
 CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
@@ -34,6 +34,7 @@ IFM-7 = 5
 
 # daikinnodetype
 ND-daikinnode-NAME = Diakin Node
+ND-daikinnode-ICON = Thermostat
 ST-daikinnls-ST-NAME = Inside Temperature
 ST-daikinnls-CLISPC-NAME = Target Temperature
 ST-daikinnls-CLIMD-NAME = Mode
