@@ -21,3 +21,4 @@ Here is what is required to use this poly:<BR>
 [pydaikin](https://pypi.org/project/pydaikin/)
 <BR>https://pypi.org/project/pydaikin/
 
+##### Special Thanks to Bob Paauwe for getting me started.
