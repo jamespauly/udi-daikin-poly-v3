@@ -1,14 +1,12 @@
 """Pydaikin appliance, represent a Daikin BRP069 device."""
 
-import logging
-
 from pydaikin.daikin_base import Appliance
+import udi_interface
 
-_LOGGER = logging.getLogger(__name__)
+LOGGER = udi_interface.LOGGER
 
 
 class DaikinInterface(Appliance):
-
     TRANSLATIONS = {
         'mode': {
             '2': 'dry',
@@ -186,7 +184,7 @@ class DaikinInterface(Appliance):
         if self.support_swing_mode:
             query_c += '&f_dir=%s' % self.values['f_dir']
 
-        _LOGGER.debug("Sending query_c: %s", query_c)
+        LOGGER.debug("Sending query_c: %s", query_c)
         await self._get_resource(query_c)
 
     async def get_control(self):
@@ -201,7 +199,7 @@ class DaikinInterface(Appliance):
         if value in ('0', '1'):
             query_h = 'common/set_holiday?en_hol=%s' % value
             self.values['en_hol'] = value
-            _LOGGER.debug("Sending query: %s", query_h)
+            LOGGER.debug("Sending query: %s", query_h)
             await self._get_resource(query_h)
 
     async def set_advanced_mode(self, mode, value):
@@ -213,7 +211,7 @@ class DaikinInterface(Appliance):
                 mode,
                 value,
             )
-            _LOGGER.debug("Sending query: %s", query_h)
+            LOGGER.debug("Sending query: %s", query_h)
             # Update the adv value from the response
             self.values.update(await self._get_resource(query_h))
 
@@ -222,7 +220,7 @@ class DaikinInterface(Appliance):
         value = self.human_to_daikin('en_streamer', mode)
         if value in ('0', '1'):
             query_h = 'aircon/set_special_mode?en_streamer=%s' % value
-            _LOGGER.debug("Sending query: %s", query_h)
+            LOGGER.debug("Sending query: %s", query_h)
             # Update the adv value from the response
             self.values.update(await self._get_resource(query_h))
 
@@ -234,7 +232,7 @@ class DaikinInterface(Appliance):
         try:
             await self._get_resource('common/get_datetime?cur=')
         except Exception as exc:  # pylint: disable=broad-except
-            _LOGGER.error('Raised "%s" while trying to auto-set internal clock', exc)
+            LOGGER.error('Raised "%s" while trying to auto-set internal clock', exc)
 
     @property
     def support_humidity(self):

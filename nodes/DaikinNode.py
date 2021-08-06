@@ -1,9 +1,9 @@
 import asyncio
 
 import udi_interface
-import utilities
-
-from DaikinInterface import DaikinInterface
+from utils.Utilities import Utilities
+from daikin.DaikinInterface import DaikinInterface
+from daikin.DaikinManager import DaikinManager
 
 LOGGER = udi_interface.LOGGER
 
@@ -38,7 +38,7 @@ class DaikinNode(udi_interface.Node):
             if int(mode) == 0:
                 settings = {'mode': 'off'}
             else:
-                settings = {'mode': utilities.to_daikin_mode_value(mode)}
+                settings = {'mode': Utilities.to_daikin_mode_value(mode)}
             print(settings)
             await daikin_control.set(settings)
             self.setDriver('CLIMD', mode)
@@ -54,7 +54,7 @@ class DaikinNode(udi_interface.Node):
             LOGGER.info('Process_temp stemp: ' + str(control['stemp']))
             if control['stemp'] != 'M':
                 LOGGER.info('process_temp stemp is numeric: ' + str(control['stemp']))
-                settings = {'stemp': utilities.fahrenheit_to_celsius(temp)}
+                settings = {'stemp': Utilities.fahrenheit_to_celsius(temp)}
                 await daikin_control.set(settings)
                 self.setDriver("CLISPC", temp)
         except Exception as ex:
@@ -68,20 +68,20 @@ class DaikinNode(udi_interface.Node):
             daikin_control = DaikinInterface(self.ip, False)
             await daikin_control.get_control()
             control = daikin_control.values
-            LOGGER.info('Inside Temp: ' + str(utilities.celsius_to_fahrenheit(sensor['htemp'])))
-            self.setDriver('ST', utilities.celsius_to_fahrenheit(sensor['htemp']))
+            LOGGER.info('Inside Temp: ' + str(Utilities.celsius_to_fahrenheit(sensor['htemp'])))
+            self.setDriver('ST', Utilities.celsius_to_fahrenheit(sensor['htemp']))
             LOGGER.info('stemp: ' + str(control['stemp']))
             if control['stemp'] != 'M':
-                self.setDriver('CLISPC', utilities.celsius_to_fahrenheit(control['stemp']))
+                self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']))
                 LOGGER.info('Set Temp: ' + str(control['stemp']))
             LOGGER.info('Process Mode: ' + str(control['mode']))
-            LOGGER.info('ISY process mode: ' + str(utilities.to_isy_mode_value(control['mode'])))
+            LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode_value(control['mode'])))
             if int(control['pow']) == 1:
-                self.setDriver('CLIMD', utilities.to_isy_mode_value(int(control['mode'])))
+                self.setDriver('CLIMD', Utilities.to_isy_mode_value(int(control['mode'])))
             else:
                 self.setDriver('CLIMD', 0)
             LOGGER.info('Fan Speed: ' + str(control['f_rate']))
-            LOGGER.info('ISY Fan Speed: ' + str(utilities.to_isy_fan_mode_value(control['f_rate'])))
+            LOGGER.info('ISY Fan Speed: ' + str(Utilities.to_isy_fan_mode_value(control['f_rate'])))
             c_mode = control['f_rate']
             if c_mode == 'A':
                 c_mode = 10
@@ -92,12 +92,15 @@ class DaikinNode(udi_interface.Node):
 
     def cmd_set_temp(self, cmd):
         asyncio.run(self.process_temp(cmd['value']))
+        #asyncio.run(DaikinManager.process_temp(cmd['value']))
 
     def cmd_set_mode(self, cmd):
         asyncio.run(self.process_mode(cmd['value']))
+        #asyncio.run(DaikinManager.process_mode(cmd['value']))
 
     def cmd_set_fan_mode(self, cmd):
         asyncio.run(self.process_fan_mode(cmd['value']))
+        #asyncio.run(DaikinManager.process_fan_mode(cmd['value']))
 
     def query(self):
         LOGGER.info("Query sensor {}".format(self.address))
