@@ -70,7 +70,7 @@ class DaikinController(udi_interface.Node):
         for node in self.poly.nodes:
             if self.poly.nodes[node] is not self:
                 self.poly.nodes[node].query()
-                LOGGER.info('Node Name: ' + self.poly.nodes[node].name)
+                LOGGER.debug('Query All - Node Name: ' + self.poly.nodes[node].name)
             self.poly.nodes[node].reportDrivers()
 
     def discover(self, *args, **kwargs):
@@ -94,32 +94,33 @@ class DaikinController(udi_interface.Node):
     def stop(self):
         LOGGER.info('Daikin NodeServer stopped.')
 
-    # def cmd_set_temp(self, cmd):
-    #     LOGGER.info('Test Store: ' + self.base_store.d.get('1').decode('utf-8'))
-    #     for key in self.base_store.keys():
-    #         ip = self.base_store.d.get(key).decode('utf-8')
-    #         asyncio.run(DaikinManager.process_temp(cmd['value'], ip))
-    #
-    # def cmd_set_mode(self, cmd):
-    #     for key in self.base_store.keys():
-    #         ip = self.base_store.d.get(key).decode('utf-8')
-    #         asyncio.run(DaikinManager.process_mode(cmd['value'], ip))
-    #
-    # def cmd_set_fan_mode(self, cmd):
-    #     for key in self.base_store.keys():
-    #         ip = self.base_store.d.get(key).decode('utf-8')
-    #         asyncio.run(DaikinManager.process_fan_mode(cmd['value'], ip))
+    def cmd_set_temp(self, cmd):
+        for key in self.base_store.keys():
+            ip = self.base_store.d.get(key).decode('utf-8')
+            asyncio.run(DaikinManager.process_temp(cmd['value'], ip))
+        self.query()
+
+    def cmd_set_mode(self, cmd):
+        for key in self.base_store.keys():
+            ip = self.base_store.d.get(key).decode('utf-8')
+            asyncio.run(DaikinManager.process_mode(cmd['value'], ip))
+        self.query()
+
+    def cmd_set_fan_mode(self, cmd):
+        for key in self.base_store.keys():
+            ip = self.base_store.d.get(key).decode('utf-8')
+            asyncio.run(DaikinManager.process_fan_mode(cmd['value'], ip))
+        self.query()
 
     id = 'controller'
     commands = {
         'QUERY': query,
-        'DISCOVER': discover
-        # 'SET_TEMP': cmd_set_temp,
-        # 'SET_MODE': cmd_set_mode,
-        # 'SET_FAN_MODE': cmd_set_fan_mode
+        'DISCOVER': discover,
+        'SET_TEMP': cmd_set_temp,
+        'SET_MODE': cmd_set_mode,
+        'SET_FAN_MODE': cmd_set_fan_mode
     }
 
     drivers = [
-        {'driver': 'ST', 'value': 1, 'uom': 2},
-        {'driver': 'GV1', 'value': 0, 'uom': 0}
+        {'driver': 'ST', 'value': 1, 'uom': 2}
     ]

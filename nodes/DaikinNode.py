@@ -14,49 +14,26 @@ class DaikinNode(udi_interface.Node):
         super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
+        self.daikin_manager = DaikinManager(ip);
 
-    async def process_fan_mode(self, mode):
+    async def process_fan_mode(self, fan_mode):
         try:
-            LOGGER.info('Process_fan_mode incoming value: ' + str(mode))
-            daikin_control = DaikinInterface(self.ip, False)
-            await daikin_control.get_control()
-            c_mode = mode
-            LOGGER.info('c_mode: ' + str(mode))
-            if c_mode == '10':
-                c_mode = 'A'
-            settings = {'f_rate': c_mode}
-            await daikin_control.set(settings)
-            self.setDriver("GV3", mode)
+            self.daikin_manager.process_fan_mode(fan_mode)
+            self.setDriver("GV3", fan_mode)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_mode(self, mode):
         try:
-            LOGGER.info('Process_mode incoming value: ' + str(mode))
-            daikin_control = DaikinInterface(self.ip, False)
-            settings = {}
-            if int(mode) == 0:
-                settings = {'mode': 'off'}
-            else:
-                settings = {'mode': Utilities.to_daikin_mode_value(mode)}
-            print(settings)
-            await daikin_control.set(settings)
+            self.daikin_manager.process_mode(mode)
             self.setDriver('CLIMD', mode)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_temp(self, temp):
         try:
-            daikin_control = DaikinInterface(self.ip, False)
-            await daikin_control.get_control()
-            control = daikin_control.values
-            LOGGER.info('Process_temp temp : ' + str(temp))
-            LOGGER.info('Process_temp stemp: ' + str(control['stemp']))
-            if control['stemp'] != 'M':
-                LOGGER.info('process_temp stemp is numeric: ' + str(control['stemp']))
-                settings = {'stemp': Utilities.fahrenheit_to_celsius(temp)}
-                await daikin_control.set(settings)
-                self.setDriver("CLISPC", temp)
+            self.daikin_manager.process_temp(temp)
+            self.setDriver("CLISPC", temp)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
@@ -92,15 +69,12 @@ class DaikinNode(udi_interface.Node):
 
     def cmd_set_temp(self, cmd):
         asyncio.run(self.process_temp(cmd['value']))
-        #asyncio.run(DaikinManager.process_temp(cmd['value']))
 
     def cmd_set_mode(self, cmd):
         asyncio.run(self.process_mode(cmd['value']))
-        #asyncio.run(DaikinManager.process_mode(cmd['value']))
 
     def cmd_set_fan_mode(self, cmd):
         asyncio.run(self.process_fan_mode(cmd['value']))
-        #asyncio.run(DaikinManager.process_fan_mode(cmd['value']))
 
     def query(self):
         LOGGER.info("Query sensor {}".format(self.address))

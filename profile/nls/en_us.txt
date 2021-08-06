@@ -3,18 +3,10 @@ ND-controller-NAME = NodeServer Online
 ND-controller-ICON = TempSensor
 CMD-ctl-QUERY-NAME = Query
 CMD-ctl-DISCOVER-NAME = Discover
-CMD-ctl-REMOVE_NOTICES_ALL-NAME = Remove Notices
-CMD-ctl-SET_DM-NAME = Set Logger Level
+CMD-ctl-SET_TEMP-NAME = Set Temperature
+CMD-ctl-SET_MODE-NAME = Set Mode
+CMD-ctl-SET_FAN_MODE-NAME = Set Fan Speed
 ST-ctl-ST-NAME = Node Server Running
-ST-ctl-GV1-NAME = Logger Level
-
-# Debug/Logger Modes
-CDM-9 = Debug + Modules
-CDM-10 = Debug
-CDM-20 = Info
-CDM-30 = Warning
-CDM-40 = Error
-CDM-50 = Critical
 
 # Daikin Modes
 #IDM-2 = Dry
