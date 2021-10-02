@@ -1,2 +1,2 @@
-from .DaikinNode            import DaikinNode
-from .DaikinController      import DaikinController
+from .DaikinNode import DaikinNode
+from .DaikinController import DaikinController

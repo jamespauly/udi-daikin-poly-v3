@@ -1,16 +1,11 @@
 import udi_interface
-import logging
 from pydaikin.discovery import Discovery
-import asyncio
 from nodes import DaikinNode
-from simplekv.memory import DictStore
 from daikin.DaikinManager import DaikinManager
 import re
-import time
 
 # IF you want a different log format than the current default
 LOGGER = udi_interface.LOGGER
-
 
 class DaikinController(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name):
@@ -21,12 +16,19 @@ class DaikinController(udi_interface.Node):
         self.address = address
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
-        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameterHandler)
+        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameter_handler)
         self.poly.ready()
         self.poly.addNode(self)
-        self.base_store = DictStore()
+        self.daikin_manager = DaikinManager()
 
-    def parameterHandler(self, params):
+    def get_driver_value(self, driver):
+        for d in self.drivers:
+            if d['driver'] == driver:
+                return d['value']
+        LOGGER.error('{} not found in drivers array'.format(driver))
+        return -1
+
+    def parameter_handler(self, params):
         self.Notices.clear()
         self.Parameters.load(params)
         self.ips_defined = False
@@ -52,8 +54,6 @@ class DaikinController(udi_interface.Node):
         LOGGER.info('Staring udi-daikin-poly NodeServer')
         # self.poly.updateProfile()
         # self.poly.setCustomParamsDoc()
-        while not self.configured:
-            time.sleep(10)
         self.discover()
 
     def poll(self, pollType):
@@ -67,6 +67,12 @@ class DaikinController(udi_interface.Node):
     def query(self, command=None):
         LOGGER.info("Query sensor {}".format(self.address))
 
+        if self.getDriver("CLISPC") is not None:
+            LOGGER.debug('Driver CLISPC: ' + self.get_driver_value("CLISPC"))
+        else:
+            self.setDriver("CLISPC", "72")
+            LOGGER.debug('Driver None CLISPC: ' + self.get_driver_value("CLISPC"))
+
         for node in self.poly.nodes:
             if self.poly.nodes[node] is not self:
                 self.poly.nodes[node].query()
@@ -77,16 +83,11 @@ class DaikinController(udi_interface.Node):
         LOGGER.info("Starting Daikin Device Discovery")
         discovery = Discovery()
         devices = discovery.poll(stop_if_found=None, ip=None)
-        device_ips = ""
-        LOGGER.critical(devices)
-        key_num = 0
         for device in iter(devices):
             end_ip = device['ip'][device['ip'].rfind('.') + 1:]
             LOGGER.critical("Adding Node {}".format(end_ip))
             self.poly.addNode(DaikinNode(self.poly, self.address, end_ip, device['name'], device['ip']))
-            device_ips = device_ips + ',' + device['ip']
-            key_num = key_num + 1
-            self.base_store.put(str(key_num), bytes(device['ip'].encode()))
+        self.query()
 
     def delete(self):
         LOGGER.info('Deleting Daikin Node Server')
@@ -95,22 +96,31 @@ class DaikinController(udi_interface.Node):
         LOGGER.info('Daikin NodeServer stopped.')
 
     def cmd_set_temp(self, cmd):
-        for key in self.base_store.keys():
-            ip = self.base_store.d.get(key).decode('utf-8')
-            asyncio.run(DaikinManager.process_temp(cmd['value'], ip))
-        self.query()
+        LOGGER.debug('Start cmd_set_temp set temp ' + str(cmd))
+        for node in self.poly.nodes:
+            LOGGER.debug('cmd_set_temp node name ' + self.poly.nodes[node].name)
+            if self.poly.nodes[node] is not self:
+                LOGGER.debug('cmd_set_temp set temp ' + str(cmd))
+                self.poly.nodes[node].cmd_set_temp(cmd)
+                self.poly.nodes[node].query()
 
     def cmd_set_mode(self, cmd):
-        for key in self.base_store.keys():
-            ip = self.base_store.d.get(key).decode('utf-8')
-            asyncio.run(DaikinManager.process_mode(cmd['value'], ip))
-        self.query()
+        LOGGER.debug('Start cmd_set_mode set mode ' + str(cmd))
+        for node in self.poly.nodes:
+            LOGGER.debug('cmd_set_mode node name ' + self.poly.nodes[node].name)
+            if self.poly.nodes[node] is not self:
+                LOGGER.debug('cmd_set_mode set mode ' + str(cmd))
+                self.poly.nodes[node].cmd_set_mode(cmd)
+                self.poly.nodes[node].query()
 
     def cmd_set_fan_mode(self, cmd):
-        for key in self.base_store.keys():
-            ip = self.base_store.d.get(key).decode('utf-8')
-            asyncio.run(DaikinManager.process_fan_mode(cmd['value'], ip))
-        self.query()
+        LOGGER.debug('Start cmd_set_fan_mode set mode ' + str(cmd))
+        for node in self.poly.nodes:
+            LOGGER.debug('cmd_set_fan_mode node name ' + self.poly.nodes[node].name)
+            if self.poly.nodes[node] is not self:
+                LOGGER.debug('cmd_set_fan_mode set mode ' + str(cmd))
+                self.poly.nodes[node].cmd_set_fan_mode(cmd)
+                self.poly.nodes[node].query()
 
     id = 'controller'
     commands = {
@@ -122,5 +132,8 @@ class DaikinController(udi_interface.Node):
     }
 
     drivers = [
-        {'driver': 'ST', 'value': 1, 'uom': 2}
+        {'driver': 'ST', 'value': 1, 'uom': 2},
+        {'driver': 'CLISPC', 'value': 70, 'uom': '17'},  # Set Cool Point
+        {'driver': 'CLIMD', 'value': 2, 'uom': '67'},  # Current Mode
+        {'driver': 'GV3', 'value': 10, 'uom': '25'}
     ]

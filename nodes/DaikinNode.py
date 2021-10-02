@@ -14,25 +14,25 @@ class DaikinNode(udi_interface.Node):
         super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
-        self.daikin_manager = DaikinManager(ip);
+        self.daikin_manager = DaikinManager()
 
     async def process_fan_mode(self, fan_mode):
         try:
-            self.daikin_manager.process_fan_mode(fan_mode)
+            await self.daikin_manager.process_fan_mode(fan_mode, self.ip)
             self.setDriver("GV3", fan_mode)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_mode(self, mode):
         try:
-            self.daikin_manager.process_mode(mode)
+            await self.daikin_manager.process_mode(mode, self.ip)
             self.setDriver('CLIMD', mode)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_temp(self, temp):
         try:
-            self.daikin_manager.process_temp(temp)
+            await self.daikin_manager.process_temp(temp, self.ip)
             self.setDriver("CLISPC", temp)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
