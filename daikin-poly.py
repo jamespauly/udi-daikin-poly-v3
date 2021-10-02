@@ -16,7 +16,7 @@ import logging
 
 if __name__ == "__main__":
     try:
-        LOG_HANDLER.set_basic_config(True, logging.DEBUG)
+        #LOG_HANDLER.set_basic_config(True, logging.DEBUG)
         polyglot = udi_interface.Interface([DaikinController, DaikinNode])
         polyglot.start()
         control = DaikinController(polyglot, 'controller', 'controller', 'Daikin Controller')
