@@ -1,5 +1,5 @@
 # controller
-ND-controller-NAME = NodeServer Online
+ND-controller-NAME = Daikin NodeServer Controller
 ND-controller-ICON = TempSensor
 CMD-ctl-QUERY-NAME = Query
 CMD-ctl-DISCOVER-NAME = Discover
