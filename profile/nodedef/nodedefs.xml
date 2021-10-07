@@ -1,7 +1,7 @@
 <nodeDefs>
     <!-- NODE DEF from 5.0 document http://wiki.universal-devices.com/index.php?title=V50_MAIN -->
     <!-- controller, this must mach the id in your Controller class-->
-    <nodeDef id="controller" nls="ctl">
+    <nodeDef id="daikin" nls="daikinnls">
         <editors/>
         <sts>
             <st id="ST" editor="bool"/>
@@ -22,10 +22,10 @@
             </accepts>
         </cmds>
     </nodeDef>
-    <nodeDef id="daikinnode" nls="daikinnls">
+    <nodeDef id="daikinnode" nls="daikinnodenls">
         <editors/>
         <sts>
-            <st id="ST" editor="I_CLISPC_F"/>
+            <st id="CC" editor="I_CLISPC_F"/>
             <st id="CLISPC" editor="I_CLISPC_F"/>
             <st id="CLIMD" editor="I_TSTAT_MODE"/>
             <st id="GV3" editor="I_DAIKIN_FAN_MODE"/>

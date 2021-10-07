@@ -146,7 +146,7 @@ class DaikinController(udi_interface.Node):
                 self.poly.nodes[node].cmd_set_fan_mode(cmd)
                 self.poly.nodes[node].query()
 
-    id = 'controller'
+    id = 'daikin'
     commands = {
         'QUERY': query,
         'DISCOVER': discover,
@@ -159,5 +159,5 @@ class DaikinController(udi_interface.Node):
         {'driver': 'ST', 'value': 1, 'uom': 2},
         {'driver': 'CLISPC', 'value': 70, 'uom': '17'},  # Set Cool Point
         {'driver': 'CLIMD', 'value': 2, 'uom': '67'},  # Current Mode
-        {'driver': 'GV3', 'value': 10, 'uom': '25'}
+        {'driver': 'GV3', 'value': 10, 'uom': '25'} # Set Fan Mode
     ]

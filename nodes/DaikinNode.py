@@ -9,9 +9,9 @@ LOGGER = udi_interface.LOGGER
 
 class DaikinNode(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name, ip):
+        super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.ip = ip
         self.address = address
-        super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
         self.daikin_manager = DaikinManager()
@@ -19,21 +19,21 @@ class DaikinNode(udi_interface.Node):
     async def process_fan_mode(self, fan_mode):
         try:
             await self.daikin_manager.process_fan_mode(fan_mode, self.ip)
-            self.setDriver("GV3", fan_mode)
+            self.setDriver("GV3", fan_mode, True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_mode(self, mode):
         try:
             await self.daikin_manager.process_mode(mode, self.ip)
-            self.setDriver('CLIMD', mode)
+            self.setDriver('CLIMD', mode, True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
     async def process_temp(self, temp):
         try:
             await self.daikin_manager.process_temp(temp, self.ip)
-            self.setDriver("CLISPC", temp)
+            self.setDriver("CLISPC", temp, True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
@@ -46,24 +46,24 @@ class DaikinNode(udi_interface.Node):
             await daikin_control.get_control()
             control = daikin_control.values
             LOGGER.info('Inside Temp: ' + str(Utilities.celsius_to_fahrenheit(sensor['htemp'])))
-            self.setDriver('ST', Utilities.celsius_to_fahrenheit(sensor['htemp']))
+            self.setDriver('CC', Utilities.celsius_to_fahrenheit(sensor['htemp']), True)
             LOGGER.info('stemp: ' + str(control['stemp']))
             if control['stemp'] != 'M':
-                self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']))
+                self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']), True)
                 LOGGER.info('Set Temp: ' + str(control['stemp']))
             LOGGER.info('Process Mode: ' + str(control['mode']))
             LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode_value(control['mode'])))
             if int(control['pow']) == 1:
-                self.setDriver('CLIMD', Utilities.to_isy_mode_value(int(control['mode'])))
+                self.setDriver('CLIMD', Utilities.to_isy_mode_value(int(control['mode'])), True)
             else:
-                self.setDriver('CLIMD', 0)
+                self.setDriver('CLIMD', 0, True)
             LOGGER.info('Fan Speed: ' + str(control['f_rate']))
             LOGGER.info('ISY Fan Speed: ' + str(Utilities.to_isy_fan_mode_value(control['f_rate'])))
             c_mode = control['f_rate']
             if c_mode == 'A':
                 c_mode = 10
             LOGGER.info('c_mode: ' + str(c_mode))
-            self.setDriver('GV3', c_mode)
+            self.setDriver('GV3', c_mode, True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
@@ -93,7 +93,7 @@ class DaikinNode(udi_interface.Node):
             LOGGER.info("longPoll (%s)", self.address)
             pass
 
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': '17'},  # Current Temp
+    drivers = [{'driver': 'CC', 'value': 0, 'uom': '17'},  # Current Temp
                {'driver': 'CLISPC', 'value': 0, 'uom': '17'},  # Set Cool Point
                {'driver': 'CLIMD', 'value': 0, 'uom': '67'},  # Current Mode
                {'driver': 'GV3', 'value': 0, 'uom': '25'}  # Set Fan Mode
