@@ -1,6 +1,6 @@
 {
   "name": "Daikin",
-  "docs": "https://github.com/jamespauly/udi-daikin-poly",
+  "docs": "https://github.com/jamespauly/udi-daikin-poly-v3",
   "type": "python3",
   "executable": "daikin-poly.py",
   "install": "install.sh",
@@ -10,15 +10,18 @@
   "shortPoll": "15",
   "longPoll": "600",
   "devMode": true,
-  "profile_version": "2.0.0",
+  "profile_version": "3.0.0",
+  "customParams": {
+    "broadcast_ips": ""
+  },
   "credits": [
     {
       "title": "Daikin: A Node Server for Controlling Diakin Mini-Splits",
       "author": "James Paul",
-      "version": "2.0.1",
+      "version": "2.1.0",
       "date": "July 16th, 2021",
-      "source": "https://github.com/jamespauly/udi-daikin-poly.git",
-      "license": "https://github.com/jamespauly/udi-daikin-poly/blob/main/LICENSE"
+      "source": "https://github.com/jamespauly/udi-daikin-poly-v3.git",
+      "license": "https://github.com/jamespauly/udi-daikin-poly-v3/blob/main/LICENSE"
     }
   ],
   "store": {

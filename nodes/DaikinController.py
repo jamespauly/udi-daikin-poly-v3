@@ -10,6 +10,7 @@ LOGGER = udi_interface.LOGGER
 class DaikinController(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name):
         super(DaikinController, self).__init__(polyglot, primary, address, name)
+        self.Parameters = None
         self.poly = polyglot
         self.name = name
         self.primary = primary
@@ -20,6 +21,8 @@ class DaikinController(udi_interface.Node):
         self.poly.ready()
         self.poly.addNode(self)
         self.daikin_manager = DaikinManager()
+        self.broadcastIpList = []
+        self.broadcastIpsDefined = False
 
     def get_driver_value(self, driver):
         for d in self.drivers:
@@ -31,30 +34,30 @@ class DaikinController(udi_interface.Node):
     def parameter_handler(self, params):
         self.Notices.clear()
         self.Parameters.load(params)
-        self.ips_defined = False
 
-        if self.Parameters['IPs'] is not None:
+        if self.Parameters['broadcast_ips'] is not None and self.Parameters['broadcast_ips'].strip() != '':
             ip_valid = True
-            ip_list = self.Parameters['IPs'].split(",")
-            for ip in ip_list:
-                if re.search(
-                        r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
-                        ip, re.M) == None:
-                    LOGGER.error('IP {} invalid.'.format(ip))
-                    self.Notices['ip'] = 'IP Address {} must be in correct format.'.format(ip)
-                    ip_valid = False
-                    break
-            if ip_valid:
-                self.ips_defined = True
-
-            if self.Parameters.isChanged('IPs'):
-                self.discover()
+            self.broadcastIpList = self.Parameters['broadcast_ips'].split(",")
+            if len(self.broadcastIpList) > 0 and (self.Parameters.isChanged('broadcast_ips') or self.Parameters.isNew('broadcast_ips')):
+                for ip in self.broadcastIpList:
+                    if re.search(
+                            r'^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$',
+                            ip, re.M) == None:
+                        LOGGER.error('IP {} invalid.'.format(ip))
+                        self.Notices['ip'] = 'IP Address {} must be in correct format ex. (10.1.0.255)'.format(ip)
+                        ip_valid = False
+                        break
+                if ip_valid:
+                    self.broadcastIpsDefined = True
+                else:
+                    return
+        self.discover()
 
     def start(self):
         LOGGER.info('Staring udi-daikin-poly NodeServer')
-        # self.poly.updateProfile()
-        # self.poly.setCustomParamsDoc()
-        self.discover()
+        self.poly.updateProfile()
+        self.poly.setCustomParamsDoc()
+        # self.discover()
 
     def poll(self, pollType):
         if 'shortPoll' in pollType:
@@ -82,11 +85,26 @@ class DaikinController(udi_interface.Node):
     def discover(self, *args, **kwargs):
         LOGGER.info("Starting Daikin Device Discovery")
         discovery = Discovery()
-        devices = discovery.poll(stop_if_found=None, ip=None)
-        for device in iter(devices):
-            end_ip = device['ip'][device['ip'].rfind('.') + 1:]
-            LOGGER.critical("Adding Node {}".format(end_ip))
-            self.poly.addNode(DaikinNode(self.poly, self.address, end_ip, device['name'], device['ip']))
+        device = None
+        if self.broadcastIpsDefined:
+            for broadcastIp in self.broadcastIpList:
+                devices = discovery.poll(stop_if_found=None, ip=broadcastIp)
+                for device in iter(devices):
+                    #end_ip = device['ip'][device['ip'].rfind('.') + 1:]
+                    deviceNode = self.poly.getNode(device['ip'])
+                    if deviceNode is None:
+                        LOGGER.critical("Adding Node {}".format(device['ip']))
+                        self.poly.addNode(DaikinNode(self.poly, self.address, device['ip'], device['name'], device['ip']))
+        else:
+            discovery = Discovery()
+            devices = discovery.poll(stop_if_found=None, ip=None)
+            for device in iter(devices):
+                #end_ip = device['ip'][device['ip'].rfind('.') + 1:]
+                deviceNode = self.poly.getNode(device['ip'])
+                if deviceNode is None:
+                    LOGGER.critical("Adding Node {}".format(device['ip']))
+                    self.poly.addNode(DaikinNode(self.poly, self.address, device['ip'], device['name'], device['ip']))
+
         self.query()
 
     def delete(self):

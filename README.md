@@ -1,6 +1,6 @@
 # Daikin Mini Split
 
-This is a node server to interface with Daikin Mini-Split HVAC systems and make it available to a Universal Devices ISY994i Polyglot interface with Polyglot V2 running on a Polisy
+This is a node server to interface with Daikin Mini-Split HVAC systems and make it available to a Universal Devices ISY994i Polyglot interface with Polyglot V3 running on a Polisy
 
 Currently supports Daikin WiFi modules:
 * BRP069Axx/BRP069Bxx/BRP072Axx
@@ -13,7 +13,11 @@ Currently supports Daikin WiFi modules:
 3. Restart the Admin Console to properly display the new node server nodes.
 
 #### Configuration
-1. No configuration needed.  Currently the nodeserver must run on the same network as your Daikin network modules, it will autodetect and set them up automatically.  I will be releasing a version soon that will allow you to set them up manually via static IP's or through Daikin's cloud service.
+1. No configuration needed.  Tt will autodetect and set them up automatically if they are on the same network as the Daikin
+Mini Splits.
+2. You can enter in a broadcast IP of another network by using the following custom param:
+   1. <b>broadcast_ips (Optional)</b> - Broadcast IP addresses of networks.  You can enter multiple by use a comma delimiter. ex. (192.168.1.255,192.168.2.255)
+      1. https://www.calculator.net/ip-subnet-calculator.html
 
 #### Requirements
 
