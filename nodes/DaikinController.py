@@ -11,7 +11,6 @@ Custom = udi_interface.Custom
 class DaikinController(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name):
         super(DaikinController, self).__init__(polyglot, primary, address, name)
-        self.Parameters = None
         self.poly = polyglot
         self.name = name
         self.primary = primary
@@ -21,6 +20,7 @@ class DaikinController(udi_interface.Node):
         self.broadcastIpsDefined = False
 
         self.Notices = Custom(polyglot, 'notices')
+        self.Parameters = Custom(polyglot, 'customparams')
 
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
