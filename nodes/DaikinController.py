@@ -59,10 +59,10 @@ class DaikinController(udi_interface.Node):
         self.discover()
 
     def start(self):
-        LOGGER.info('Staring udi-daikin-poly NodeServer')
+        LOGGER.info('Staring Daikin NodeServer')
         self.poly.updateProfile()
         self.poly.setCustomParamsDoc()
-        # self.discover()
+        self.discover()
 
     def poll(self, pollType):
         if 'shortPoll' in pollType:
@@ -74,6 +74,7 @@ class DaikinController(udi_interface.Node):
 
     def query(self, command=None):
         LOGGER.info("Query sensor {}".format(self.address))
+        self.discover()
 
         if self.getDriver("CLISPC") is not None:
             LOGGER.debug('Driver CLISPC: ' + self.get_driver_value("CLISPC"))
@@ -109,7 +110,8 @@ class DaikinController(udi_interface.Node):
                     LOGGER.critical("Adding Node {}".format(device['ip']))
                     self.poly.addNode(DaikinNode(self.poly, self.address, device['ip'], device['name'], device['ip']))
 
-        self.query()
+        for node in self.poly.nodes:
+            self.poly.nodes[node].reportDrivers()
 
     def delete(self):
         LOGGER.info('Deleting Daikin Node Server')
