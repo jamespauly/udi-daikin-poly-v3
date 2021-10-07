@@ -77,7 +77,6 @@ class DaikinController(udi_interface.Node):
             if self.poly.nodes[node] is not self:
                 self.poly.nodes[node].query()
                 LOGGER.debug('Query All - Node Name: ' + self.poly.nodes[node].name)
-            self.poly.nodes[node].reportDrivers()
 
     def discover(self, *args, **kwargs):
         LOGGER.info("Starting Daikin Device Discovery")
