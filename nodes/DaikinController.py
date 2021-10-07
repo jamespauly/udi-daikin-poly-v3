@@ -97,7 +97,7 @@ class DaikinController(udi_interface.Node):
                 devices = discovery.poll(stop_if_found=None, ip=broadcastIp)
                 for device in iter(devices):
                     #end_ip = device['ip'][device['ip'].rfind('.') + 1:]
-                    deviceNode = self.poly.getNode(device['ip'])
+                    deviceNode = self.poly.getNode(device['ip'].replace('.', ''))
                     if deviceNode is None:
                         LOGGER.critical("Adding Node {}".format(device['ip']))
                         self.poly.addNode(DaikinNode(self.poly, self.address, device['ip'].replace('.', ''), device['name'], device['ip']))
@@ -105,7 +105,7 @@ class DaikinController(udi_interface.Node):
             devices = discovery.poll(stop_if_found=None, ip=None)
             for device in iter(devices):
                 #end_ip = device['ip'][device['ip'].rfind('.') + 1:]
-                deviceNode = self.poly.getNode(device['ip'])
+                deviceNode = self.poly.getNode(device['ip'].replace('.', ''))
                 if deviceNode is None:
                     LOGGER.critical("Adding Node {}".format(device['ip']))
                     self.poly.addNode(DaikinNode(self.poly, self.address, device['ip'].replace('.', ''), device['name'], device['ip']))

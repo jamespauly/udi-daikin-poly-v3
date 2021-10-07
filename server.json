@@ -7,7 +7,7 @@
   "install_cloud": "install_cloud.sh",
   "description": "Daikin Node Server",
   "notice": "",
-  "shortPoll": "15",
+  "shortPoll": "300",
   "longPoll": "600",
   "devMode": true,
   "profile_version": "3.0.0",
