@@ -12,8 +12,10 @@ class DaikinNode(udi_interface.Node):
         super(DaikinNode, self).__init__(polyglot, primary, address, name)
         self.ip = ip
         self.address = address
+
         self.poly.subscribe(self.poly.START, self.start, address)
         self.poly.subscribe(self.poly.POLL, self.poll)
+
         self.daikin_manager = DaikinManager()
 
     async def process_fan_mode(self, fan_mode):
@@ -76,22 +78,20 @@ class DaikinNode(udi_interface.Node):
     def cmd_set_fan_mode(self, cmd):
         asyncio.run(self.process_fan_mode(cmd['value']))
 
+    def poll(self, pollType):
+        if 'shortPoll' in pollType:
+            LOGGER.info('shortPoll (node)')
+            self.query()
+        else:
+            LOGGER.info('longPoll (node)')
+            pass
+
     def query(self):
         LOGGER.info("Query sensor {}".format(self.address))
         asyncio.run(self.process())
-        for node in self.poly.nodes:
-            self.poly.nodes[node].reportDrivers()
 
     def start(self):
         self.query()
-
-    def poll(self, pollType):
-        if 'shortPoll' in pollType:
-            LOGGER.info("shortPoll (%s)", self.address)
-            self.query()
-        else:
-            LOGGER.info("longPoll (%s)", self.address)
-            pass
 
     drivers = [{'driver': 'CC', 'value': 0, 'uom': '17'},  # Current Temp
                {'driver': 'CLISPC', 'value': 0, 'uom': '17'},  # Set Cool Point
