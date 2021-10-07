@@ -6,6 +6,7 @@ import re
 
 # IF you want a different log format than the current default
 LOGGER = udi_interface.LOGGER
+Custom = udi_interface.Custom
 
 class DaikinController(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name):
@@ -15,14 +16,18 @@ class DaikinController(udi_interface.Node):
         self.name = name
         self.primary = primary
         self.address = address
-        self.poly.subscribe(self.poly.START, self.start, address)
-        self.poly.subscribe(self.poly.POLL, self.poll)
-        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameter_handler)
-        self.poly.ready()
-        self.poly.addNode(self)
         self.daikin_manager = DaikinManager()
         self.broadcastIpList = []
         self.broadcastIpsDefined = False
+
+        self.Notices = Custom(polyglot, 'notices')
+
+        self.poly.subscribe(self.poly.START, self.start, address)
+        self.poly.subscribe(self.poly.POLL, self.poll)
+        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameter_handler)
+
+        self.poly.ready()
+        self.poly.addNode(self)
 
     def get_driver_value(self, driver):
         for d in self.drivers:
