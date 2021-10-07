@@ -79,7 +79,8 @@ class DaikinNode(udi_interface.Node):
     def query(self):
         LOGGER.info("Query sensor {}".format(self.address))
         asyncio.run(self.process())
-        self.reportDrivers()
+        for node in self.poly.nodes:
+            self.poly.nodes[node].reportDrivers()
 
     def start(self):
         self.query()
