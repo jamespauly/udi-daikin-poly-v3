@@ -12,7 +12,7 @@
                     <p id="" editor="I_CLISPC_F" init="CLISPC"/>
                 </cmd>
                 <cmd id="SET_MODE">
-                    <p id="" editor="I_DAIKIN_MODE" init="CLIMD"/>
+                    <p id="" editor="I_DAIKIN_MODE" init="GV4"/>
                 </cmd>
                 <cmd id="SET_FAN_MODE">
                     <p id="" editor="I_DAIKIN_FAN_MODE" init="GV3"/>
@@ -27,8 +27,8 @@
         <sts>
             <st id="CC" editor="I_CLISPC_F"/>
             <st id="CLISPC" editor="I_CLISPC_F"/>
-            <st id="CLIMD" editor="I_TSTAT_MODE"/>
             <st id="GV3" editor="I_DAIKIN_FAN_MODE"/>
+            <st id="GV4" editor="I_DAIKIN_MODE"/>
         </sts>
         <cmds>
             <accepts>
@@ -36,7 +36,7 @@
                     <p id="" editor="I_CLISPC_F" init="CLISPC"/>
                 </cmd>
                 <cmd id="SET_MODE">
-                    <p id="" editor="I_DAIKIN_MODE" init="CLIMD"/>
+                    <p id="" editor="I_DAIKIN_MODE" init="GV4"/>
                 </cmd>
                 <cmd id="SET_FAN_MODE">
                     <p id="" editor="I_DAIKIN_FAN_MODE" init="GV3"/>

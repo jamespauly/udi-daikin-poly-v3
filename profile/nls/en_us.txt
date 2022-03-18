@@ -4,17 +4,17 @@ ND-daikin-ICON = TempSensor
 CMD-daikinnls-QUERY-NAME = Query
 CMD-daikinnls-DISCOVER-NAME = Discover
 CMD-daikinnls-SET_TEMP-NAME = Set Temperature
-CMD-daikinnls-SET_MODE-NAME = Set Mode
+CMD-daikinnls-SET_MODE-NAME = Set Thermostat Mode
 CMD-daikinnls-SET_FAN_MODE-NAME = Set Fan Speed
 ST-daikinnls-ST-NAME = Daikin NodeServer Running
 
 # Daikin Modes
-#IDM-2 = Dry
-#IDM-3 = Cool
-#IDM-4 = Heat
-#IDM-6 = Fan
-#IDM-7 = Auto
-#IDM-10 = Off
+IDM-0 = Off
+IDM-1 = Heat
+IDM-2 = Cool
+IDM-3 = Auto
+IDM-6 = Fan Only
+IDM-8 = Dry Air
 
 # Daikin Fan Modes
 IFM-10 = Auto
@@ -29,8 +29,8 @@ ND-daikinnode-NAME = Diakin Node
 ND-daikinnode-ICON = Thermostat
 ST-daikinnodenls-CC-NAME = Inside Temperature
 ST-daikinnodenls-CLISPC-NAME = Target Temperature
-ST-daikinnodenls-CLIMD-NAME = Mode
-ST-daikinnodenls-GV3-NAME = Mode
+ST-daikinnodenls-GV4-NAME = Thermostat Mode
+ST-daikinnodenls-GV3-NAME = Fan Mode
 CMD-daikinnodenls-SET_TEMP-NAME = Set Temperature
-CMD-daikinnodenls-SET_MODE-NAME = Set Mode
+CMD-daikinnodenls-SET_MODE-NAME = Set Thermostat Mode
 CMD-daikinnodenls-SET_FAN_MODE-NAME = Set Fan Speed

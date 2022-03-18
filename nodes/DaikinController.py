@@ -152,6 +152,6 @@ class DaikinController(udi_interface.Node):
     drivers = [
         {'driver': 'ST', 'value': 1, 'uom': 2},
         {'driver': 'CLISPC', 'value': 70, 'uom': '17'},  # Set Cool Point
-        {'driver': 'CLIMD', 'value': 2, 'uom': '67'},  # Current Mode
+        {'driver': 'GV4', 'value': 2, 'uom': '25'},  # Current Mode
         {'driver': 'GV3', 'value': 10, 'uom': '25'} # Set Fan Mode
     ]

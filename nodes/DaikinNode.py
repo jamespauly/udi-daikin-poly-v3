@@ -1,11 +1,13 @@
 import asyncio
 
 import udi_interface
-from utils.Utilities import Utilities
+
 from daikin.DaikinInterface import DaikinInterface
 from daikin.DaikinManager import DaikinManager
+from utils.Utilities import Utilities
 
 LOGGER = udi_interface.LOGGER
+
 
 class DaikinNode(udi_interface.Node):
     def __init__(self, polyglot, primary, address, name, ip):
@@ -28,7 +30,7 @@ class DaikinNode(udi_interface.Node):
     async def process_mode(self, mode):
         try:
             await self.daikin_manager.process_mode(mode, self.ip)
-            self.setDriver('CLIMD', mode, True)
+            self.setDriver('GV4', mode, True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
@@ -56,9 +58,9 @@ class DaikinNode(udi_interface.Node):
             LOGGER.info('Process Mode: ' + str(control['mode']))
             LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode_value(control['mode'])))
             if int(control['pow']) == 1:
-                self.setDriver('CLIMD', Utilities.to_isy_mode_value(int(control['mode'])))
+                self.setDriver('GV4', Utilities.to_isy_mode_value(int(control['mode'])))
             else:
-                self.setDriver('CLIMD', 0, True)
+                self.setDriver('GV4', 0, True)
             LOGGER.info('Fan Speed: ' + str(control['f_rate']))
             LOGGER.info('ISY Fan Speed: ' + str(Utilities.to_isy_fan_mode_value(control['f_rate'])))
             c_mode = control['f_rate']
@@ -96,7 +98,7 @@ class DaikinNode(udi_interface.Node):
 
     drivers = [{'driver': 'CC', 'value': 0, 'uom': '17'},  # Current Temp
                {'driver': 'CLISPC', 'value': 0, 'uom': '17'},  # Set Cool Point
-               {'driver': 'CLIMD', 'value': 0, 'uom': '67'},  # Current Mode
+               {'driver': 'GV4', 'value': 0, 'uom': '25'},  # Current Mode
                {'driver': 'GV3', 'value': 0, 'uom': '25'}  # Set Fan Mode
                ]
 
