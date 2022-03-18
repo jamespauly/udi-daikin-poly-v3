@@ -53,9 +53,9 @@ class DaikinController(udi_interface.Node):
                         break
                 if ip_valid:
                     self.broadcastIpsDefined = True
+                    self.discover()
                 else:
                     return
-        self.discover()
 
     def start(self):
         LOGGER.info('Staring Daikin NodeServer')
@@ -104,8 +104,10 @@ class DaikinController(udi_interface.Node):
                 else:
                     LOGGER.info('Node {} already exists, skipping'.format(deviceId))
 
-        for node in self.poly.nodes:
-            self.poly.nodes[node].reportDrivers()
+        LOGGER.info('Finished discovery')
+
+        for node in self.nodes:
+            self.nodes[node].reportDrivers()
 
     def delete(self):
         LOGGER.info('Deleting Daikin Node Server')
@@ -152,6 +154,6 @@ class DaikinController(udi_interface.Node):
     drivers = [
         {'driver': 'ST', 'value': 1, 'uom': 2},
         {'driver': 'CLISPC', 'value': 70, 'uom': '17'},  # Set Cool Point
-        {'driver': 'GV4', 'value': 2, 'uom': '25'},  # Current Mode
+        {'driver': 'GV4', 'value': 3, 'uom': '25'},  # Current Mode
         {'driver': 'GV3', 'value': 10, 'uom': '25'} # Set Fan Mode
     ]
