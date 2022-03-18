@@ -106,9 +106,6 @@ class DaikinController(udi_interface.Node):
 
         LOGGER.info('Finished discovery')
 
-        for node in self.nodes:
-            self.nodes[node].reportDrivers()
-
     def delete(self):
         LOGGER.info('Deleting Daikin Node Server')
 
