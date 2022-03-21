@@ -28,9 +28,8 @@
     "developer": "jgpaul16@gmail.com",
     "purchaseOptions": [
       {
-        "isTrial": true,
         "isPerpetual": true,
-        "price": 5.00
+        "price": 0.00
       }
     ]
   }
