@@ -68,10 +68,10 @@ class DaikinController(udi_interface.Node):
         self.discover()
 
         if self.getDriver("CLISPC") is not None:
-            LOGGER.debug('Driver CLISPC: ' + self.get_driver_value("CLISPC"))
+            LOGGER.debug('Driver CLISPC: ' + str(self.get_driver_value("CLISPC")))
         else:
             self.setDriver("CLISPC", "72")
-            LOGGER.debug('Driver None CLISPC: ' + self.get_driver_value("CLISPC"))
+            LOGGER.debug('Driver None CLISPC: ' + str(self.get_driver_value("CLISPC")))
 
         for node in self.poly.nodes:
             if self.poly.nodes[node] is not self:
