@@ -15,20 +15,14 @@ class DaikinController(udi_interface.Node):
         self.name = name
         self.primary = primary
         self.address = address
-        self.daikin_manager = DaikinManager()
 
         self.Notices = Custom(polyglot, 'notices')
         self.Parameters = Custom(polyglot, 'customparams')
 
         self.poly.subscribe(self.poly.START, self.start, address)
-        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameter_handler)
 
         self.poly.ready()
         self.poly.addNode(self)
-
-    def parameter_handler(self, params):
-        self.Notices.clear()
-        self.Parameters.load(params)
 
     def start(self):
         LOGGER.info('Staring Daikin NodeServer')
@@ -45,11 +39,14 @@ class DaikinController(udi_interface.Node):
         discovery = Discovery()
         devices = discovery.poll(stop_if_found=None, ip=None)
         for device in iter(devices):
-            if self.poly.getNode(device['mac'][-10:]) is None:
-                LOGGER.info("Adding Node {}".format(device['mac'][-10:]))
-                self.poly.addNode(DaikinNode(self.poly, self.address, device['mac'][-10:], device['name'], device['ip']))
+            device_id = device['mac'][-10:].lower()
+            if self.poly.getNode(device_id) is None:
+                LOGGER.info("Adding Node {}".format(device_id))
+                self.poly.addNode(DaikinNode(self.poly, self.address, device_id, device['name'], device['ip']))
             else:
-                LOGGER.info('Node {} already exists, skipping'.format(device['mac'][-10:]))
+                daikin_node = self.poly.getNode(device_id)
+                daikin_node.query()
+                LOGGER.info('Node {} already exists, skipping'.format(device_id))
 
         LOGGER.info('Finished Node discovery')
 
