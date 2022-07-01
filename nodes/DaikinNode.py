@@ -52,17 +52,15 @@ class DaikinNode(udi_interface.Node):
             LOGGER.info('Inside Temp: ' + str(Utilities.celsius_to_fahrenheit(sensor['htemp'])))
             self.setDriver('CC', Utilities.celsius_to_fahrenheit(sensor['htemp']), True)
             LOGGER.info('stemp: ' + control['stemp'])
-            if self.isfloat(control['stemp']):
+            if Utilities.isfloat(control['stemp']):
                 self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']), True)
                 LOGGER.info('Set Temp: ' + control['stemp'])
             LOGGER.info('Process Mode: ' + control['mode'])
-            #LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode[control['mode']]))
             if int(control['pow']) == 1:
                 self.setDriver('GV4', int(control['mode']), True)
             else:
                 self.setDriver('GV4', 10, True)
             LOGGER.info('Fan Speed: ' + control['f_rate'])
-            #LOGGER.info('ISY Fan Speed: ' + Utilities.to_isy_fan_mode[control['f_rate']])
             c_mode = control['f_rate']
             if c_mode == 'A':
                 c_mode = '10'
@@ -79,13 +77,6 @@ class DaikinNode(udi_interface.Node):
 
     def cmd_set_fan_mode(self, cmd):
         asyncio.run(self.process_fan_mode(cmd['value']))
-
-    def isfloat(self, num):
-        try:
-            float(num)
-            return True
-        except ValueError:
-            return False
 
     def poll(self, pollType):
         if 'shortPoll' in pollType:

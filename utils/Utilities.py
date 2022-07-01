@@ -44,51 +44,12 @@ class Utilities:
         7: 5
     }
 
-    def to_isy_mode_value(mode):
-        if mode is None:
-            return 0
-        elif mode == 3:
-            return 2
-        elif mode == 0:
-            return 3
-        elif mode == 4:
-            return 1
-        elif mode == 10:
-            return 0
-        elif mode == 2:
-            return 8
-        elif mode == 7:
-            return 3
-        elif mode == 1:
-            return 3
-        else:
-            return mode
-
-    def to_daikin_mode_value(mode):
-        if mode is None:
-            return '0'
-        elif mode == '2':
-            return '3'
-        elif mode == '3':
-            return '7'
-        elif mode == '1':
-            return '4'
-        elif mode == '0':
-            return '10'
-        elif mode == '8':
-            return '2'
-        else:
-            return mode
-
-    def to_isy_fan_mode_value(mode):
-        if mode == 'A':
-            return 0
-        elif mode == 'B':
-            return 10
-        elif mode == '0':
-            return 3
-        elif mode == '3' or mode == '4' or mode == '5' or mode == '6' or mode == '7':
-            return 1
+    def isfloat(num):
+        try:
+            float(num)
+            return True
+        except ValueError:
+            return False
 
     def celsius_to_fahrenheit(celsius, as_int=True):
         celsius = float(celsius)
