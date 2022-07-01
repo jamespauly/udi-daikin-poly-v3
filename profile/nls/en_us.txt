@@ -5,12 +5,21 @@ CMD-daikinnls-DISCOVER-NAME = Discover
 ST-daikinnls-ST-NAME = Daikin NodeServer Running
 
 # Daikin Modes
-IDM-0 = Off
-IDM-1 = Heat
-IDM-2 = Cool
-IDM-3 = Auto
+IDM-0 = Auto
+IDM-1 = Auto
+IDM-2 = Dry
+IDM-3 = Cool
+IDM-4 = Heat
 IDM-6 = Fan Only
-IDM-8 = Dry Air
+IDM-7 = Auto
+IDM-10 = Off
+
+# IDM-0 = Off
+# IDM-1 = Heat
+# IDM-2 = Cool
+# IDM-3 = Auto
+# IDM-6 = Fan Only
+# IDM-8 = Dry Air
 
 # Daikin Fan Modes
 IFM-10 = Auto

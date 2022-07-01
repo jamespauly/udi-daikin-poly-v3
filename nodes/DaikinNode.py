@@ -56,13 +56,13 @@ class DaikinNode(udi_interface.Node):
                 self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']), True)
                 LOGGER.info('Set Temp: ' + control['stemp'])
             LOGGER.info('Process Mode: ' + control['mode'])
-            LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode[control['mode']]))
+            #LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode[control['mode']]))
             if int(control['pow']) == 1:
-                self.setDriver('GV4', Utilities.to_isy_mode[control['mode']], True)
+                self.setDriver('GV4', int(control['mode']), True)
             else:
-                self.setDriver('GV4', 0, True)
+                self.setDriver('GV4', 10, True)
             LOGGER.info('Fan Speed: ' + control['f_rate'])
-            LOGGER.info('ISY Fan Speed: ' + Utilities.to_isy_fan_mode[control['f_rate']])
+            #LOGGER.info('ISY Fan Speed: ' + Utilities.to_isy_fan_mode[control['f_rate']])
             c_mode = control['f_rate']
             if c_mode == 'A':
                 c_mode = '10'
