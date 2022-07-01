@@ -10,7 +10,8 @@ class Utilities:
         '10': 0,
         '2': 8,
         '7': 3,
-        '1': 3
+        '1': 3,
+        '6': 5
     }
 
     to_daikin_mode = {
