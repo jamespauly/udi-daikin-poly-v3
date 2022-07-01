@@ -12,7 +12,6 @@
   "devMode": true,
   "profile_version": "3.0.0",
   "customParams": {
-    "broadcast_ips": ""
   },
   "credits": [
     {
