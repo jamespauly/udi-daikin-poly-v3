@@ -10,7 +10,7 @@
   "shortPoll": "60",
   "longPoll": "600",
   "devMode": true,
-  "profile_version": "3.0.0",
+  "profile_version": "3.0.3",
   "customParams": {
   },
   "credits": [
