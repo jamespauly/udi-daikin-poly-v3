@@ -11,7 +11,7 @@
   "longPoll": "600",
   "logLevel": "INFO",
   "devMode": true,
-  "profile_version": "3.0.4",
+  "profile_version": "3.0.5",
   "customParams": {
   },
   "credits": [
