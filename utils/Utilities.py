@@ -1,7 +1,48 @@
 from datetime import datetime
 
+
 class Utilities:
-    # TODO: Need to switch these to dictionary lookups
+    to_isy_mode = {
+        None: 0,
+        '3': 2,
+        '0': 3,
+        '4': 1,
+        '10': 0,
+        '2': 8,
+        '7': 3,
+        '1': 3
+    }
+
+    to_daikin_mode = {
+        None: '0',
+        2: '3',
+        3: '7',
+        1: '4',
+        0: '10',
+        8: '2'
+    }
+
+    to_isy_fan_mode = {
+        'A': 0,
+        'B': 10,
+        '0': 3,
+        '3': 1,
+        '4': 1,
+        '5': 1,
+        '6': 1,
+        '7': 1
+    }
+
+    to_isy_fan_mode_detail = {
+        'A': 'Auto',
+        'B': 'Quiet',
+        3: 1,
+        4: 2,
+        5: 3,
+        6: 4,
+        7: 5
+    }
+
     def to_isy_mode_value(mode):
         if mode is None:
             return 0
@@ -38,7 +79,6 @@ class Utilities:
         else:
             return mode
 
-
     def to_isy_fan_mode_value(mode):
         if mode == 'A':
             return 0
@@ -49,48 +89,12 @@ class Utilities:
         elif mode == '3' or mode == '4' or mode == '5' or mode == '6' or mode == '7':
             return 1
 
-
-    def to_isy_fan_mode_detail(mode):
-        if mode == 'A':
-            return 'Auto'
-        elif mode == 'B':
-            return 'Quiet'
-        elif mode == '3':
-            return '1'
-        elif mode == '4':
-            return '2'
-        elif mode == '5':
-            return '3'
-        elif mode == '6':
-            return '4'
-        elif mode == '7':
-            return '5'
-
-
-    def to_driver_value(temp, as_int=True):
-        if temp is None:
-            return 0
-
-        temp = float(temp)
-
-        if as_int:
-            return int(round(temp))
-        else:
-            return round(temp, 1)
-
-
-    def get_seconds_from_midnight():
-        now = datetime.now()
-        return (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-
-
     def celsius_to_fahrenheit(celsius, as_int=True):
         celsius = float(celsius)
         if as_int:
             return int(round((celsius * (9 / 5)) + 32))
         else:
             return round((celsius * (9 / 5)) + 32, 1)
-
 
     def fahrenheit_to_celsius(fahrenheit, as_int=True):
         fahrenheit = float(fahrenheit)

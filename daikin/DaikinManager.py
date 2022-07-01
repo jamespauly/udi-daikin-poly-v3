@@ -24,10 +24,10 @@ class DaikinManager():
             LOGGER.info('process_mode incoming value: ' + str(mode))
             daikin_control = DaikinInterface(ip, False)
             settings = {}
-            if int(mode) == 0:
+            if mode == 0:
                 settings = {'mode': 'off'}
             else:
-                settings = {'mode': Utilities.to_daikin_mode_value(mode)}
+                settings = {'mode': Utilities.to_daikin_mode(mode)}
             print(settings)
             await daikin_control.set(settings)
         except Exception as ex:
@@ -40,9 +40,9 @@ class DaikinManager():
             await daikin_control.get_control()
             control = daikin_control.values
             LOGGER.info('Process_temp temp : ' + str(temp))
-            LOGGER.info('Process_temp stemp: ' + str(control['stemp']))
+            LOGGER.info('Process_temp stemp: ' + control['stemp'])
             if control['stemp'] != 'M':
-                LOGGER.info('process_temp stemp is numeric: ' + str(control['stemp']))
+                LOGGER.info('process_temp stemp is numeric: ' + control['stemp'])
                 settings = {'stemp': Utilities.fahrenheit_to_celsius(temp)}
                 await daikin_control.set(settings)
         except Exception as ex:

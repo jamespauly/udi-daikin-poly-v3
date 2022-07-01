@@ -9,12 +9,6 @@
     <editor id="I_TSTAT_FAN_MODE">
         <range uom="68" subset="0,1"/>
     </editor>
-<!--    <editor id="I_TSTAT_MODE">
-        <range uom="67" subset="0,1,2,3,6,8"/>
-    </editor>-->
-<!--    <editor id="I_DAIKIN_MODE">
-        <range uom="67" subset="0,1,2,3,6,8"/>
-    </editor>-->
     <editor id="I_DAIKIN_MODE">
         <range uom="25" subset="0,1,2,3,6,8" nls="IDM"/>
     </editor>
