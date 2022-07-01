@@ -27,7 +27,7 @@ class DaikinManager():
             if mode == 0:
                 settings = {'mode': 'off'}
             else:
-                settings = {'mode': Utilities.to_daikin_mode(mode)}
+                settings = {'mode': Utilities.to_daikin_mode[mode]}
             print(settings)
             await daikin_control.set(settings)
         except Exception as ex:
