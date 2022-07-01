@@ -9,8 +9,9 @@
   "notice": "",
   "shortPoll": "60",
   "longPoll": "600",
+  "logLevel": "INFO",
   "devMode": true,
-  "profile_version": "3.0.3",
+  "profile_version": "3.0.4",
   "customParams": {
   },
   "credits": [
