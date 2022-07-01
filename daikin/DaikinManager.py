@@ -1,6 +1,7 @@
 import udi_interface
 from utils.Utilities import Utilities
 from daikin.DaikinInterface import DaikinInterface
+import json
 
 LOGGER = udi_interface.LOGGER
 
@@ -28,7 +29,7 @@ class DaikinManager():
                 settings = {'mode': 'off'}
             else:
                 settings = {'mode': str(mode)}
-            LOGGER.debug('Process Mode Settings: ' + settings)
+            LOGGER.debug('Process Mode Settings: ' + json.dumps(settings))
             await daikin_control.set(settings)
         except Exception as ex:
             raise
