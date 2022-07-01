@@ -80,7 +80,7 @@ class DaikinNode(udi_interface.Node):
     def cmd_set_fan_mode(self, cmd):
         asyncio.run(self.process_fan_mode(cmd['value']))
 
-    def isfloat(num):
+    def isfloat(self, num):
         try:
             float(num)
             return True
