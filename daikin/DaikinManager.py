@@ -26,7 +26,7 @@ class DaikinManager():
             daikin_control = DaikinInterface(ip, False)
             settings = {}
             if mode == 10:
-                settings = {'mode': 'off'}
+                settings = {'mode': 'off', 'pow': '0'}
             else:
                 settings = {'mode': str(mode)}
             LOGGER.debug('Process Mode Settings: ' + json.dumps(settings))
