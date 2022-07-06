@@ -22,10 +22,10 @@ class DaikinManager():
 
     async def process_mode(self, mode, ip):
         try:
-            LOGGER.info('process_mode incoming value: ' + str(type(mode)))
+            LOGGER.info('process_mode incoming value: ' + mode)
             daikin_control = DaikinInterface(ip, False)
             settings = {}
-            if mode == 10:
+            if mode == '10':
                 settings = {'mode': 'off', 'pow': '0'}
             else:
                 settings = {'mode': str(mode)}
