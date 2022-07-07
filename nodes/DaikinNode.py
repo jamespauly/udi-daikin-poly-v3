@@ -41,7 +41,7 @@ class DaikinNode(udi_interface.Node):
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
-    async def process(self):
+    async def update(self):
         try:
             daikin_sensor = DaikinInterface(self.ip, False)
             await daikin_sensor.get_sensor()
@@ -50,24 +50,22 @@ class DaikinNode(udi_interface.Node):
             await daikin_control.get_control()
             control = daikin_control.values
             LOGGER.info('Inside Temp: ' + str(Utilities.celsius_to_fahrenheit(sensor['htemp'])))
-            self.setDriver('CC', Utilities.celsius_to_fahrenheit(sensor['htemp']))
-            LOGGER.info('stemp: ' + str(control['stemp']))
-            if control['stemp'] != 'M':
-                self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']))
-                LOGGER.info('Set Temp: ' + str(control['stemp']))
-            LOGGER.info('Process Mode: ' + str(control['mode']))
-            LOGGER.info('ISY process mode: ' + str(Utilities.to_isy_mode_value(control['mode'])))
+            self.setDriver('CC', Utilities.celsius_to_fahrenheit(sensor['htemp']), True)
+            LOGGER.info('stemp: ' + control['stemp'])
+            if Utilities.isfloat(control['stemp']):
+                self.setDriver('CLISPC', Utilities.celsius_to_fahrenheit(control['stemp']), True)
+                LOGGER.info('Set Temp: ' + control['stemp'])
+            LOGGER.info('Process Mode: ' + control['mode'])
             if int(control['pow']) == 1:
-                self.setDriver('GV4', Utilities.to_isy_mode_value(int(control['mode'])))
+                self.setDriver('GV4', int(control['mode']), True)
             else:
-                self.setDriver('GV4', 0, True)
-            LOGGER.info('Fan Speed: ' + str(control['f_rate']))
-            LOGGER.info('ISY Fan Speed: ' + str(Utilities.to_isy_fan_mode_value(control['f_rate'])))
+                self.setDriver('GV4', 10, True)
+            LOGGER.info('Fan Speed: ' + control['f_rate'])
             c_mode = control['f_rate']
             if c_mode == 'A':
-                c_mode = 10
-            LOGGER.info('c_mode: ' + str(c_mode))
-            self.setDriver('GV3', c_mode)
+                c_mode = '10'
+            LOGGER.info(f'c_mode: {c_mode}')
+            self.setDriver('GV3', int(c_mode), True)
         except Exception as ex:
             LOGGER.exception("Could not refresh diakin sensor %s because %s", self.address, ex)
 
@@ -84,14 +82,10 @@ class DaikinNode(udi_interface.Node):
         if 'shortPoll' in pollType:
             LOGGER.info('shortPoll (node)')
             self.query()
-        else:
-            LOGGER.info('longPoll (node)')
-            pass
 
     def query(self):
         LOGGER.info("Query sensor {}".format(self.address))
-        asyncio.run(self.process())
-        self.reportDrivers()
+        asyncio.run(self.update())
 
     def start(self):
         self.query()
@@ -105,7 +99,8 @@ class DaikinNode(udi_interface.Node):
     commands = {
         'SET_TEMP': cmd_set_temp,
         'SET_MODE': cmd_set_mode,
-        'SET_FAN_MODE': cmd_set_fan_mode
+        'SET_FAN_MODE': cmd_set_fan_mode,
+        'QUERY': query
     }
 
     id = 'daikinnode'

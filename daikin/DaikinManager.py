@@ -1,6 +1,7 @@
 import udi_interface
 from utils.Utilities import Utilities
 from daikin.DaikinInterface import DaikinInterface
+import json
 
 LOGGER = udi_interface.LOGGER
 
@@ -21,14 +22,14 @@ class DaikinManager():
 
     async def process_mode(self, mode, ip):
         try:
-            LOGGER.info('process_mode incoming value: ' + str(mode))
+            LOGGER.info('process_mode incoming value: ' + mode)
             daikin_control = DaikinInterface(ip, False)
             settings = {}
-            if int(mode) == 0:
-                settings = {'mode': 'off'}
+            if mode == '10':
+                settings = {'mode': 'off', 'pow': '0'}
             else:
-                settings = {'mode': Utilities.to_daikin_mode_value(mode)}
-            print(settings)
+                settings = {'mode': str(mode)}
+            LOGGER.debug('Process Mode Settings: ' + json.dumps(settings))
             await daikin_control.set(settings)
         except Exception as ex:
             raise
@@ -40,9 +41,9 @@ class DaikinManager():
             await daikin_control.get_control()
             control = daikin_control.values
             LOGGER.info('Process_temp temp : ' + str(temp))
-            LOGGER.info('Process_temp stemp: ' + str(control['stemp']))
-            if control['stemp'] != 'M':
-                LOGGER.info('process_temp stemp is numeric: ' + str(control['stemp']))
+            LOGGER.info('Process_temp stemp: ' + control['stemp'])
+            if Utilities.isfloat(control['stemp']):
+                LOGGER.info('process_temp stemp is numeric: ' + control['stemp'])
                 settings = {'stemp': Utilities.fahrenheit_to_celsius(temp)}
                 await daikin_control.set(settings)
         except Exception as ex:
