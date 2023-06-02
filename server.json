@@ -14,7 +14,6 @@
   "logLevel": "INFO",
   "devMode": true,
   "profile_version": "3.0.0",
-  "version": "3.1.4",
   "developer": "James Paul",
   "customParams": {
   },
@@ -22,6 +21,7 @@
     {
       "title": "Daikin: A Node Server for Controlling Diakin Mini-Splits",
       "author": "James Paul",
+      "version": "3.1.4",
       "date": "July 16th, 2021",
       "source": "https://github.com/jamespauly/udi-daikin-poly-v3.git",
       "license": "https://github.com/jamespauly/udi-daikin-poly-v3/blob/main/LICENSE"
