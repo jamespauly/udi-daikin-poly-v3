@@ -1,4 +1,22 @@
 # Daikin Node Server Custom Parameters
 
-* <b>broadcast_ips (Optional)</b> - Broadcase IP addresses of networks.  You can enter multiple by use a comma delimiter. ex. (192.168.1.255,192.168.2.255)
-  * https://www.calculator.net/ip-subnet-calculator.html
+* <b>devices (Optional)</b> - Manually input your devices if they are on a different subnet. Ex. 
+```json
+[
+    {
+        "name": "Room1",
+        "mac": "20:c5:f6:63:04:f6",
+        "ip": "10.99.99.1"
+    },
+    {
+        "name": "Room2",
+        "mac": "20:c5:f6:63:04:f7",
+        "ip": "10.99.99.2"
+    },
+    {
+        "name": "Room3",
+        "mac": "20:c5:f6:63:04:f8",
+        "ip": "10.99.99.3"
+    }
+]
+```

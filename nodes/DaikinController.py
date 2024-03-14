@@ -1,3 +1,5 @@
+import json
+
 import udi_interface
 from pydaikin.discovery import Discovery
 from nodes import DaikinNode
@@ -20,9 +22,14 @@ class DaikinController(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
 
         self.poly.subscribe(self.poly.START, self.start, address)
+        self.poly.subscribe(self.poly.CUSTOMPARAMS, self.parameter_handler)
 
         self.poly.ready()
         self.poly.addNode(self)
+
+    def parameter_handler(self, params):
+        self.Notices.clear()
+        self.Parameters.load(params)
 
     def start(self):
         LOGGER.info('Staring Daikin NodeServer')
@@ -35,11 +42,15 @@ class DaikinController(udi_interface.Node):
         self.discover()
 
     def discover(self, *args, **kwargs):
-        LOGGER.info("Starting Daikin Device Discovery")
-        discovery = Discovery()
-        devices = discovery.poll(stop_if_found=None, ip=None)
+        if self.Parameters['devices'] is not None:
+            LOGGER.info("Starting Daikin Device Load From Config")
+            devices = json.loads(self.Parameters['devices'])
+        else:
+            LOGGER.info("Starting Daikin Device Discovery")
+            discovery = Discovery()
+            devices = discovery.poll(stop_if_found=None, ip=None)
         for device in iter(devices):
-            device_id = device['mac'].lower()
+            device_id = device['mac'].replace(':', '').lower()
             if self.poly.getNode(device_id) is None:
                 LOGGER.info("Adding Node {}".format(device_id))
                 self.poly.addNode(DaikinNode(self.poly, self.address, device_id, device['name'], device['ip']))
