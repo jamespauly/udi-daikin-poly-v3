@@ -7,7 +7,7 @@ import udi_interface
 import sys
 
 LOGGER = udi_interface.LOGGER
-LOG_HANDLER = udi_interface.LOG_HANDLER;
+LOG_HANDLER = udi_interface.LOG_HANDLER
 
 from nodes import DaikinController
 from nodes import DaikinNode
