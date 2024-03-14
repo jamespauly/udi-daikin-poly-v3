@@ -14,6 +14,26 @@ Currently supports Daikin WiFi modules:
 
 #### Configuration
 1. No configuration needed.  Tt will autodetect and set them up automatically if they are on the same network as the Daikin
+2. If they are not on the same network then you can add a custom config with a key called <i><b>devices</b></i>.  Ex.
+```json
+[
+    {
+        "name": "Room1",
+        "mac": "20:c5:f6:63:04:f6",
+        "ip": "10.99.99.1"
+    },
+    {
+        "name": "Room2",
+        "mac": "20:c5:f6:63:04:f7",
+        "ip": "10.99.99.2"
+    },
+    {
+        "name": "Room3",
+        "mac": "20:c5:f6:63:04:f8",
+        "ip": "10.99.99.3"
+    }
+]
+```
 
 #### Requirements
 
